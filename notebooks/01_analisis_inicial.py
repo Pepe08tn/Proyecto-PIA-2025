@@ -5,18 +5,22 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import os
 
+# Configuración para visualizaciones
 sns.set(style="whitegrid")
 plt.rcParams["figure.figsize"] = (10, 6)
+
+# Ruta del dataset (ruta relativa al proyecto)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-DATA_PATH = os.path.join(BASE_DIR, "data", "C:\Users\pc\OneDrive\Escritorio\Debernardi et al 2020 data.csv")
+DATA_PATH = os.path.join(BASE_DIR, "data", "pancreatic_cancer_structured.csv")
+
+# Cargar el dataset
 df = pd.read_csv(DATA_PATH)
 
+# -------------------------------
+# Análisis Inicial - Sprint 1
+# -------------------------------
 
-path = "johnjdavisiv/urinary-biomarkers-for-pancreatic-cancer"
-Pancreas : pd.DataFrame = pd.read_csv(path)
-Pancreas
-
-
+# 1. Vista general del dataset
 print("🔍 Primeras filas del dataset:")
 print(df.head(), "\n")
 
