@@ -1,0 +1,19 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Entorno virtual
+tf_env/
+
+# Editor config
+.vscode/
+.idea/
+
+# Archivos temporales / logs
+*.log
+*.tmp
+
+# Sistema
+.DS_Store
+Thumbs.db
