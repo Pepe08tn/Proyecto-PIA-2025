@@ -1,12 +1,12 @@
 from fastapi import FastAPI
-from .models import BloodAnalysisInput
+from src.api.models import BloodAnalysisInput
 import joblib
 
 app = FastAPI(title="PIA - Pancreatic Cancer Prediction API")
 
 # Cargar modelo entrenado
 # Ajusta la ruta al archivo .pkl de tu modelo IA
-model = joblib.load("ruta/a/tu_modelo.pkl")
+model = joblib.load("model.pkl")
 
 @app.post("/predict")
 def predict(data: BloodAnalysisInput):
