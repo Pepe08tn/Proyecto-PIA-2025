@@ -21,7 +21,7 @@ class CNN(nn.Module):
         )
         self.fc_layers = nn.Sequential(
             nn.Flatten(),
-            nn.Linear(64 * 8 * 8, 128),
+            nn.LazyLinear(128),
             nn.ReLU(),
             nn.Linear(128, 2)
         )
