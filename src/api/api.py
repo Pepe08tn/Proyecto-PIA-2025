@@ -1,29 +1,18 @@
 from fastapi import FastAPI
-from .models import BloodAnalysisInput
+from src.api.models import BloodAnalysisInput
 import joblib
+import pandas as pd
 
 app = FastAPI(title="PIA - Pancreatic Cancer Prediction API")
 
-# Cargar modelo entrenado
-# Ajusta la ruta al archivo .pkl de tu modelo IA
-model = joblib.load("ruta/a/tu_modelo.pkl")
+# Cargar modelo entrenado y columnas de entrada
+model = joblib.load("src/api/model.pkl")
+columnas_modelo = joblib.load("src/api/columnas_modelo.pkl")
 
 @app.post("/predict")
 def predict(data: BloodAnalysisInput):
-    # Convertir datos a la estructura que espera el modelo
-    features = [[
-        data.age,
-        data.plasma_CA19_9,
-        data.creatinine,
-        data.LYVE1,
-        data.REG1B,
-        data.TFF1,
-        data.REG1A,
-        int(data.sex_F),
-        int(data.sex_M),
-        data.CEA,
-        data.THBS
-    ]]
-
-    prediction = model.predict(features)
+    # Convertir datos a DataFrame
+    datos = pd.DataFrame([data.dict()])
+    datos = datos[columnas_modelo]  # asegurar mismo orden de columnas
+    prediction = model.predict(datos)
     return {"prediction": int(prediction[0])}
