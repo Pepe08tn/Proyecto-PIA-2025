@@ -8,3 +8,8 @@ fastapi
 uvicorn
 joblib
 pydantic
+torch
+torchvision
+torchsummary
+opencv-python
+Pillow
