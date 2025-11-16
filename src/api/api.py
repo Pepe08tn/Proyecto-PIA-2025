@@ -5,14 +5,57 @@ import pandas as pd
 
 app = FastAPI(title="PIA - Pancreatic Cancer Prediction API")
 
-# Cargar modelo entrenado y columnas de entrada
+# ---------------------------------
+# PREDICCIÓN ANÁLISIS DE SANGRE
+# ---------------------------------
+
 model = joblib.load("src/api/model.pkl")
 columnas_modelo = joblib.load("src/api/columnas_modelo.pkl")
 
 @app.post("/predict")
 def predict(data: BloodAnalysisInput):
-    # Convertir datos a DataFrame
     datos = pd.DataFrame([data.dict()])
-    datos = datos[columnas_modelo]  # asegurar mismo orden de columnas
+    datos = datos[columnas_modelo]
     prediction = model.predict(datos)
     return {"prediction": int(prediction[0])}
+
+
+# ---------------------------------
+# PREDICCIÓN DE IMÁGENES
+# ---------------------------------
+
+from fastapi import UploadFile, File, HTTPException
+from src.mia_predictor.prediccion import predict as predict_image_model
+import shutil
+import os
+
+@app.post("/predict-image")
+async def predict_image(file: UploadFile = File(...)):
+
+    # Validar tipo de archivo
+    if file.content_type not in ["image/png", "image/jpeg", "image/jpg"]:
+        raise HTTPException(status_code=400, detail="Formato de imagen no soportado")
+
+    # Guardar archivo temporal (IMPORTANTE)
+    temp_path = f"temp_{file.filename}"
+
+    with open(temp_path, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+
+    try:
+        # AHORA SÍ: pasarle la RUTA AL MODELO DE TU AMIGO
+        result = predict_image_model(temp_path)
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error en la IA de imágenes: {str(e)}")
+
+    finally:
+        # Borrar archivo temporal
+        if os.path.exists(temp_path):
+            os.remove(temp_path)
+
+    return {
+        "status": "success",
+        "prediction": result["predicted_class"],
+        "probabilities": result["probabilities"]
+    }

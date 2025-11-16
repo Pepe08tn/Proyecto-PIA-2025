@@ -1,10 +1,27 @@
+# --- Librerías de análisis de datos ---
 pandas
 numpy
 matplotlib
 seaborn
+
+# --- Machine Learning ---
 scikit-learn
 xgboost
+joblib
+
+# --- API ---
 fastapi
 uvicorn
-joblib
+
+# --- Validación de datos ---
 pydantic
+
+# --- Modelo basado en imágenes ---
+pillow
+torch
+torchvision
+torchsummary
+opencv-python
+
+# --- Otros utilitarios ---
+python-multipart   # necesario para UploadFile en FastAPI
