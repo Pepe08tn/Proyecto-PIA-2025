@@ -1,0 +1,8 @@
+setup.py
+mia_predictor/__init__.py
+mia_predictor/prediccion.py
+mia_predictor.egg-info/PKG-INFO
+mia_predictor.egg-info/SOURCES.txt
+mia_predictor.egg-info/dependency_links.txt
+mia_predictor.egg-info/requires.txt
+mia_predictor.egg-info/top_level.txt
