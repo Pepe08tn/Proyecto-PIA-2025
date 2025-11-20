@@ -11,7 +11,8 @@ API_DIR = os.path.dirname(os.path.abspath(__file__))
 # Directorio raíz del proyecto → PROYECTO-PIA-2025/
 ROOT_DIR = os.path.dirname(API_DIR)
 
-# Agregamos ROOT_DIR al PYTHONPATH para poder importar api/ y mia_predictor/
+# ⭐⭐ AGREGA EL RAÍZ AL PYTHONPATH ⭐⭐
+# Con esto Python puede importar correctamente mia_predictor/
 sys.path.append(ROOT_DIR)
 
 # ---------------------------------

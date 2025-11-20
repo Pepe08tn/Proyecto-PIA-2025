@@ -12,6 +12,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Ruta absoluta al archivo cnn_model.pth dentro de /api
 MODEL_PATH = os.path.join(BASE_DIR, "api", "cnn_model.pth")
 
+print("📌 Cargando modelo desde:", MODEL_PATH)
 
 # ======== MODELO REAL ENTRENADO ======== #
 
@@ -54,7 +55,9 @@ class CNN_simple(nn.Module):
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model = CNN_simple().to(device)
 
-# Cargar pesos entrenados usando la ruta absoluta
+if not os.path.exists(MODEL_PATH):
+    raise FileNotFoundError(f"❌ No se encontró el archivo del modelo en: {MODEL_PATH}")
+
 model.load_state_dict(torch.load(MODEL_PATH, map_location=device), strict=True)
 
 model.eval()
@@ -68,10 +71,12 @@ transform = transforms.Compose([
     transforms.Normalize([0.5]*3, [0.5]*3)
 ])
 
-
 # ======== FUNCIÓN PÚBLICA PARA LA API ======== #
 
 def predict(image_path: str):
+
+    if not os.path.exists(image_path):
+        raise FileNotFoundError(f"❌ Imagen no encontrada en: {image_path}")
 
     image = Image.open(image_path).convert("RGB")
     image = transform(image).unsqueeze(0).to(device)
