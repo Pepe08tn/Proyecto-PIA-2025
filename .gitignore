@@ -48,6 +48,9 @@ env/
 models/
 checkpoints/
 
+# --- PERMITIR EL MODELO DE PIA ---
+!api/cnn_model.pth
+
 # --------------------------------------------------------
 # Imágenes generadas / resultados
 # --------------------------------------------------------
