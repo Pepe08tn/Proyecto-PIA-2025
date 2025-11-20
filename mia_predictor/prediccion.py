@@ -2,6 +2,16 @@ import torch
 from torchvision import transforms
 from PIL import Image
 import torch.nn as nn
+import os
+
+# ======== RUTA DEL MODELO ======== #
+
+# Directorio raíz del proyecto (uno arriba de /mia_predictor)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# Ruta absoluta al archivo cnn_model.pth dentro de /api
+MODEL_PATH = os.path.join(BASE_DIR, "api", "cnn_model.pth")
+
 
 # ======== MODELO REAL ENTRENADO ======== #
 
@@ -27,7 +37,7 @@ class CNN_simple(nn.Module):
 
         self.fc_layers = nn.Sequential(
             nn.Flatten(),
-            nn.Linear(64 * 16 * 16, 128),   # <---- ESTE VALOR ES CLAVE
+            nn.Linear(64 * 16 * 16, 128),
             nn.ReLU(),
             nn.Dropout(0.5),
             nn.Linear(128, 2)
@@ -44,10 +54,11 @@ class CNN_simple(nn.Module):
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model = CNN_simple().to(device)
 
-# Cargar pesos entrenados
-model.load_state_dict(torch.load("api/cnn_model.pth", map_location=device), strict=True)
+# Cargar pesos entrenados usando la ruta absoluta
+model.load_state_dict(torch.load(MODEL_PATH, map_location=device), strict=True)
 
 model.eval()
+
 
 # ======== TRANSFORMACIÓN DE LA IMAGEN ======== #
 
@@ -59,6 +70,7 @@ transform = transforms.Compose([
 
 
 # ======== FUNCIÓN PÚBLICA PARA LA API ======== #
+
 def predict(image_path: str):
 
     image = Image.open(image_path).convert("RGB")
