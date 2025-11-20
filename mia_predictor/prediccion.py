@@ -45,7 +45,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model = CNN_simple().to(device)
 
 # Cargar pesos entrenados
-model.load_state_dict(torch.load("src/api/cnn_model.pth", map_location=device), strict=True)
+model.load_state_dict(torch.load("api/cnn_model.pth", map_location=device), strict=True)
 
 model.eval()
 

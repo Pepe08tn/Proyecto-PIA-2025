@@ -1,11 +1,27 @@
 import sys
 import os
 
-# Asegura que src/ quede en PYTHONPATH
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# ---------------------------------
+# CONFIGURACIÓN DE RUTAS
+# ---------------------------------
+
+# Directorio del archivo api.py → api/
+API_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# Directorio raíz del proyecto → PROYECTO-PIA-2025/
+ROOT_DIR = os.path.dirname(API_DIR)
+
+# Agregamos ROOT_DIR al PYTHONPATH para poder importar api/ y mia_predictor/
+sys.path.append(ROOT_DIR)
+
+# ---------------------------------
+# IMPORTS
+# ---------------------------------
 
 from fastapi import FastAPI, UploadFile, File, HTTPException
-from src.api.models import BloodAnalysisInput
+from api.models import BloodAnalysisInput
+from mia_predictor.prediccion import predict as predict_image_model
+
 import joblib
 import pandas as pd
 import shutil
@@ -19,8 +35,11 @@ app = FastAPI(title="PIA - Pancreatic Cancer Prediction API")
 # PREDICCIÓN ANÁLISIS DE SANGRE
 # ---------------------------------
 
-model = joblib.load("src/api/model.pkl")
-columnas_modelo = joblib.load("src/api/columnas_modelo.pkl")
+model_path = os.path.join(API_DIR, "model.pkl")
+columns_path = os.path.join(API_DIR, "columnas_modelo.pkl")
+
+model = joblib.load(model_path)
+columnas_modelo = joblib.load(columns_path)
 
 @app.post("/predict")
 def predict(data: BloodAnalysisInput):
@@ -30,10 +49,8 @@ def predict(data: BloodAnalysisInput):
     return {"prediction": int(prediction[0])}
 
 # ---------------------------------
-# PREDICCIÓN IMÁGENES
+# PREDICCIÓN DE IMÁGENES
 # ---------------------------------
-
-from src.mia_predictor.prediccion import predict as predict_image_model
 
 @app.post("/predict-image")
 async def predict_image(file: UploadFile = File(...)):
@@ -41,7 +58,7 @@ async def predict_image(file: UploadFile = File(...)):
     if file.content_type not in ["image/png", "image/jpeg", "image/jpg"]:
         raise HTTPException(status_code=400, detail="Formato de imagen no soportado")
 
-    temp_path = f"temp_{file.filename}"
+    temp_path = os.path.join(ROOT_DIR, f"temp_{file.filename}")
 
     with open(temp_path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
