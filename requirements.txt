@@ -25,3 +25,4 @@ opencv-python
 
 # --- Otros utilitarios ---
 python-multipart   # necesario para UploadFile en FastAPI
+mia_predictor
