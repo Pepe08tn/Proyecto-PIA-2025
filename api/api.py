@@ -42,6 +42,10 @@ columns_path = os.path.join(API_DIR, "columnas_modelo.pkl")
 model = joblib.load(model_path)
 columnas_modelo = joblib.load(columns_path)
 
+@app.get("/")
+def root():
+    return {"status": "ok", "message": "PIA API running"}
+
 @app.post("/predict")
 def predict(data: BloodAnalysisInput):
     datos = pd.DataFrame([data.dict()])
